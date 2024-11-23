@@ -1,24 +1,34 @@
 
 <div class="mat-elevation-z2" style="width: 30%; padding: 30px; margin: 50px auto; display: flex;justify-content: center;">
+
+  <!-- FORMULARIO -->
   <form [formGroup]="formEmpleado">
+
+      <!-- Caja Texto -->
       <div class="flex">
           <mat-form-field>
               <mat-label>Nombre Completo</mat-label>
               <input matInput  formControlName="nombreCompleto">
             </mat-form-field>
       </div>
+
+      <!-- Caja Texto -->
       <div class="flex">
           <mat-form-field>
               <mat-label>Correo</mat-label>
               <input matInput  formControlName="correo">
             </mat-form-field>
       </div>
+
+      <!-- Caja Texto -->
       <div class="flex">
           <mat-form-field>
               <mat-label>Sueldo</mat-label>
               <input matInput type="number"  formControlName="sueldo">
             </mat-form-field>
       </div>
+
+      <!-- Caja Texto -->
       <div class="flex">
           <mat-form-field>
               <mat-label>Fecha Contrato</mat-label>
@@ -26,6 +36,7 @@
             </mat-form-field>
       </div>
 
+      <!-- BOTONES -->
       <div class="flex">
           <button mat-flat-button color="primary" (click)="guardar()">Guardar</button>
           <button mat-flat-button color="warn" (click)="volver()" style="margin-left: 8px;">Volver</button>

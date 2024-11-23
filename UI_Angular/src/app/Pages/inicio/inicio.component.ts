@@ -15,52 +15,77 @@ import { Router } from '@angular/router';
   templateUrl: './inicio.component.html',
   styleUrl: './inicio.component.css'
 })
-export class InicioComponent {
-
+export class InicioComponent
+{
+  // Servicio:
   private empleadoServicio = inject(EmpleadoService);
+
+  // Registros Obtenidos:
   public listaEmpleados:Empleado[] = [];
+
+  // Columnas de Tabla:
   public displayedColumns : string[] = ['nombreCompleto','correo','sueldo','fechaContratado','accion'];
 
-  obtenerEmpleados(){
-    this.empleadoServicio.lista().subscribe({
-      next:(data)=>{
-        if(data.length > 0){
+  // METODO: GET Al Endpoint Y Obtiene Todos:
+  obtenerEmpleados()
+  {
+    this.empleadoServicio.lista().subscribe(
+    {
+      next:(data)=>
+      {
+        if(data.length > 0)
+        {
           this.listaEmpleados = data;
         }
       },
-      error:(err)=>{
+      error:(err)=>
+      {
         console.log(err.message)
       }
     })
   }
 
-  constructor(private router:Router){
-
+  constructor(private router:Router)
+  {
     this.obtenerEmpleados();
   }
 
-  nuevo(){
+
+  // Direccion Crear:
+  nuevo()
+  {
     this.router.navigate(['/empleado',0]);
   }
 
-  editar(objeto:Empleado){
+  // Direccion Editar:
+  editar(objeto:Empleado)
+  {
     this.router.navigate(['/empleado',objeto.idEmpleado]);
   }
-  eliminar(objeto:Empleado){
-    if(confirm("Desea eliminar el empleado" + objeto.nombreCompleto)){
-      this.empleadoServicio.eliminar(objeto.idEmpleado).subscribe({
-        next:(data)=>{
-          if(data.Respuesta!=0){
+
+  // Accion Eliminar:
+  eliminar(objeto:Empleado)
+  {
+    if(confirm("Desea eliminar el empleado" + objeto.nombreCompleto))
+    {
+
+      this.empleadoServicio.eliminar(objeto.idEmpleado).subscribe(
+      {
+        next:(data)=>
+        {
+          if(data.Respuesta!=0)
+          {
             this.obtenerEmpleados();
-          }else{
-            alert("no se pudo eliminar")
           }
         },
-        error:(err)=>{
+        error:(err)=>
+        {
           console.log(err.message)
         }
       })
+
     }
   }
+
 
 }

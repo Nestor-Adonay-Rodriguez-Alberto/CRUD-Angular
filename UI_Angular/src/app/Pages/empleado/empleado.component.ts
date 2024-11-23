@@ -16,13 +16,18 @@ import { Empleado } from '../../Models/Empleado';
   templateUrl: './empleado.component.html',
   styleUrl: './empleado.component.css'
 })
-export class EmpleadoComponent implements OnInit {
+export class EmpleadoComponent implements OnInit
+{
 
   @Input('id') idEmpleado! : number;
+
+  // Servicio:
   private empleadoServicio = inject(EmpleadoService);
   public formBuild = inject(FormBuilder);
 
-  public formEmpleado:FormGroup = this.formBuild.group({
+  // Formulario a Rellenar:
+  public formEmpleado:FormGroup = this.formBuild.group(
+  {
     nombreCompleto: [''],
     correo:[''],
     sueldo:[0],
@@ -31,67 +36,96 @@ export class EmpleadoComponent implements OnInit {
 
   constructor(private router:Router){}
 
-  ngOnInit(): void {
-    if(this.idEmpleado != 0){
-      this.empleadoServicio.obtener(this.idEmpleado).subscribe({
-        next:(data) =>{
-          this.formEmpleado.patchValue({
+
+  // METODO INICIO: Si biene un id lo buscamos en DB y
+  // Lo Pintamos En El Formulario:
+  ngOnInit(): void
+  {
+    if(this.idEmpleado != 0)
+    {
+      this.empleadoServicio.obtener(this.idEmpleado).subscribe(
+      {
+        next:(data) =>
+        {
+          this.formEmpleado.patchValue(
+          {
             nombreCompleto: data.nombreCompleto,
-            correo:data.correo,
-            sueldo:data.sueldo,
-            fechaContratado:data.fechaContratado
+            correo: data.correo,
+            sueldo: data.sueldo,
+            fechaContratado: data.fechaContratado
           })
         },
-        error:(err) =>{
+        error:(err) =>
+        {
           console.log(err.message)
         }
       })
     }
   }
 
-guardar(){
-  const objeto : Empleado = {
-    idEmpleado : this.idEmpleado,
-    nombreCompleto: this.formEmpleado.value.nombreCompleto,
-    correo: this.formEmpleado.value.correo,
-    sueldo:this.formEmpleado.value.sueldo,
-    fechaContratado:this.formEmpleado.value.fechaContratado,
+  // TODOS LOS DATOS DEL FORMULARIO LOS CONVERTIMOS A UN OBJETO:
+  guardar()
+  {
+    // Objeto a Guardar:
+    const objeto : Empleado =
+    {
+     idEmpleado : this.idEmpleado,
+     nombreCompleto: this.formEmpleado.value.nombreCompleto,
+     correo: this.formEmpleado.value.correo,
+     sueldo:this.formEmpleado.value.sueldo,
+     fechaContratado:this.formEmpleado.value.fechaContratado,
+    }
+
+    if(this.idEmpleado == 0)
+    {
+      this.empleadoServicio.crear(objeto).subscribe(
+      {
+        next:(data) =>
+        {
+          if(data.Respuesta!=0)
+          {
+           this.router.navigate(["/"]);
+          }
+          else
+          {
+           alert("Error, No se pudo Crear.")
+          }
+        },
+        error:(err) =>
+        {
+         console.log(err.message)
+        }
+      })
+    }
+    else
+    {
+
+     this.empleadoServicio.editar(objeto).subscribe(
+      {
+        next:(data) =>
+        {
+         if(data.Respuesta!=0)
+          {
+           this.router.navigate(["/"]);
+          }else
+          {
+           alert("Error al editar")
+          }
+        },
+        error:(err) =>
+        {
+         console.log(err.message)
+        }
+      })
+
+    }
   }
 
-  if(this.idEmpleado == 0){
-    this.empleadoServicio.crear(objeto).subscribe({
-      next:(data) =>{
-        if(data.Respuesta!=0){
-          this.router.navigate(["/"]);
-        }else{
-          alert("Error al crear")
-        }
-      },
-      error:(err) =>{
-        console.log(err.message)
-      }
-    })
-  }else{
-    this.empleadoServicio.editar(objeto).subscribe({
-      next:(data) =>{
-        if(data.Respuesta!=0){
-          this.router.navigate(["/"]);
-        }else{
-          alert("Error al editar")
-        }
-      },
-      error:(err) =>{
-        console.log(err.message)
-      }
-    })
-  }
-
-
-}
-
-volver(){
+  // Direccion Componente principal:
+  volver()
+  {
   this.router.navigate(["/"]);
-}
+  }
 
 
 }
